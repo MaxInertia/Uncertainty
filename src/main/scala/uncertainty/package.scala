@@ -2,6 +2,10 @@
   * Created by Dorian Thiessen on 2018-03-09.
   */
 package object uncertainty {
+  
+  object IF {
+    @inline def apply(ub: UBoolean)(f: =>Unit): Unit = UBoolean.uif(ub)(f)
+  }
 
   // Implicit conversions between Uncertain Values
   // TODO: These appear not to be working (related to failing test: Mixing)

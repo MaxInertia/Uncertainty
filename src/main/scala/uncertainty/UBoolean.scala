@@ -26,23 +26,17 @@ case class Unclear(p: Double) extends UBoolean
 
 /*// Could also be defined as an enumeration
 object UBoolean extends Enumeration {
-  protected case class Val {
-
-  }
+  protected case class Val {}
 }*/
 
 object UBoolean {
   private type UBoolCheck = UBoolean => (Unit => Unit)
   def uif(ub: UBoolean)(f: => Unit): Unit = ub match {
-    case True         =>
-      println("Matched True")
-      f
-    case False        =>
-      println("Matched False")
-      Unit
+    case True         => f
+    case False        => Unit
     case Unclear(p)   =>
       println(s"Matched Unclear($p)")
-      Unit
+      Unit // TODO: Both perform f, and don't perform f.
     case Undetermined =>
       println("Matched Undetermined")
       Unit
