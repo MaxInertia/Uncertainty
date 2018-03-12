@@ -33,7 +33,7 @@ object UBoolean extends Enumeration {
 
 object UBoolean {
   private type UBoolCheck = UBoolean => (Unit => Unit)
-  def uif(ub: UBoolean)(f: Unit): Unit = ub match {
+  def uif(ub: UBoolean)(f: => Unit): Unit = ub match {
     case True         =>
       println("Matched True")
       f

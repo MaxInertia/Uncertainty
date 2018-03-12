@@ -15,12 +15,9 @@ object UBoolean_Tests extends TestSuite {
         assert(x)
       }
       'uif_False - {
-        var y = false
         uif(False) {
-          println("Changing y to true in uif(False)")
-          y = true
+          assert(false)
         }
-        assert(!y)
       }
     }
   }
