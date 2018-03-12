@@ -30,15 +30,11 @@ object UBoolean extends Enumeration {
 }*/
 
 object UBoolean {
-  private type UBoolCheck = UBoolean => (Unit => Unit)
-  def uif(ub: UBoolean)(f: => Unit): Unit = ub match {
-    case True         => f
-    case False        => Unit
-    case Unclear(p)   =>
-      println(s"Matched Unclear($p)")
-      Unit // TODO: Both perform f, and don't perform f.
-    case Undetermined =>
-      println("Matched Undetermined")
-      Unit
+  def uif(ub: UBoolean)(f: => Unit)(cf: ControlFlow): Unit =
+    ub match {
+      case True         => f
+      case False        => cf
+      case Unclear(p)   => Unit // TODO: Both perform f, and don't perform f.
+      case Undetermined => Unit
   }
 }

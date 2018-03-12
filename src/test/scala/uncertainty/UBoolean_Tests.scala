@@ -5,16 +5,11 @@ import utest._
 object UBoolean_Tests extends TestSuite {
   override def tests: Tests = Tests {
     import uncertainty.UBoolean.uif
+    import uncertainty._
+    'if - {
 
-    'UBoolean - {
-      'uif_True - {
-        var x = false
-        uif(True) {
-          //println("Changing x to true in uif(True)")
-          x = true
-        }
-        assert(x)
-      }
+      import uncertainty.IF._
+
       'IF_True - {
         var x = false
         IF(True) {
@@ -24,35 +19,44 @@ object UBoolean_Tests extends TestSuite {
         assert(x)
       }
 
-      'uif_False - {
-        uif(False) {
-          //println("entered uif(False) block")
-          assert(false)
-        }
-      }
-
-      'uif_False - {
-        uif(False) {
+      'IF_False - {
+        IF(False) {
           //println("entered IF(False) block")
           assert(false)
         }
       }
+    }
 
-      /*'uif_Unclear - {
+    'if_else - {
+      'IF_True_Else - {
         var x = false
-        uif(Unclear(50)) {
-          println("Changing x to true in uif(True)")
+        IF(True) {
+          println("Changing x to true in IF(True); ELSE")
           x = true
-        }
-        assert(x)
-      }*/
-
-      /*'uif_Undetermined - {
-        // Currently the same as False
-        uif(Undetermined) {
+        } (ELSE {
+          println("Ran ELSE in IF(True); ELSE")
           assert(false)
-        }
-      }*/
+        })
+        assert(x)
+      }
+
+      'IF_False_Else - {
+        var x = false
+        IF(False) {
+          println("entered IF block in {IF(False); ELSE}")
+          assert(false)
+        } (ELSE {
+          println("Entered ELSE block of {IF(False); ELSE}")
+          x = true
+        })
+        assert(x)
+      }
+    }
+
+    'else - {
+      ELSE {
+        println("The ELSE ran!")
+      }
     }
   }
 }
