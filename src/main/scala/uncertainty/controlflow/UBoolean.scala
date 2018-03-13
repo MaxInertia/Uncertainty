@@ -1,4 +1,6 @@
-package uncertainty
+package uncertainty.controlflow
+
+import uncertainty.Uncertain
 
 trait UBoolean extends Uncertain[Boolean]
 
@@ -15,7 +17,7 @@ case object False extends UBoolean
 /**
   * Truth value is unknown
   */
-case object Undetermined extends UBoolean
+case object Unknown extends UBoolean
 
 /**
   * Truth value has uncertainty
@@ -30,11 +32,11 @@ object UBoolean extends Enumeration {
 }*/
 
 object UBoolean {
-  def uif(ub: UBoolean)(f: => Unit)(cf: ControlFlow): Unit =
+  /*def uif(ub: UBoolean)(f: => Unit)(next: Block): Unit =
     ub match {
       case True         => f
-      case False        => cf
+      case False        => next
       case Unclear(p)   => Unit // TODO: Both perform f, and don't perform f.
       case Undetermined => Unit
-  }
+  }*/
 }

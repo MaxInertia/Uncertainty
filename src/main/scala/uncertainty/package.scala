@@ -2,20 +2,7 @@
   * Created by Dorian Thiessen on 2018-03-09.
   */
 package object uncertainty {
-  
-  trait ControlFlow
 
-  object IF {
-    @inline def apply(ub: UBoolean)(f: => Unit, cf: => ControlFlow = DoneIF): Unit = UBoolean.uif(ub)(f)(cf)
-  }
-
-  object ELSE extends ControlFlow {
-    @inline def apply(g: => Unit): Unit = g
-  }
-
-  object DoneIF extends ControlFlow {
-    @inline def apply(): Unit = Unit
-  }
 
   // Implicit conversions between Uncertain Values
   // TODO: These appear not to be working (related to failing test: Mixing)
