@@ -1,6 +1,5 @@
 package uncertainty.umath
 
-import uncertainty._
 import utest._
 
 /**
@@ -8,55 +7,92 @@ import utest._
   */
 object Primitive_Tests extends TestSuite {
   override def tests: Tests = Tests {
+    val EPSILON = 0.00001
 
     'UDouble - {
       'create - {
-        import UNumeric.UDoubleIsFractional._
         val ud = UDouble(2155.0, 43.2)
-        ud+ud
+        ud + ud
       }
+
       'create_wImplicits - {
         val ud0 = UDouble(21.2, 1.7)
         val ud1 = 21.2 +- 1.7
         val ud2 = 21.2 +/- 1.7
-        assert(ud0 == ud1)
-        assert(ud1 == ud2)
+      }
+
+      'comparisons - {
+        '=== {
+          val ud0 = UDouble(21.2, 1.7)
+          val ud1 = 21.2 +- 1.7
+          val ud2 = 21.2 +/- 1.7
+          assert(ud0 === ud0)
+          assert(ud1 === ud1)
+          assert(ud2 === ud2)
+          assert(ud0 === ud1)
+          assert(ud1 === ud2)
+        }
+
+        val uSmall = 4.0 +- 1.0
+        val uMedium = 8.0 +- 1.0
+        val uLarge = 24.0 +- 1.0
+
+        '< {
+          assert(uSmall < uMedium)
+          assert(uMedium < uLarge)
+          assert(uSmall < uLarge)
+          assert(uSmall <= uMedium)
+          assert(uMedium <= uLarge)
+          assert(uSmall <= uLarge)
+        }
+
+        '> {
+          assert(uMedium > uSmall)
+          assert(uLarge > uMedium)
+          assert(uLarge > uSmall)
+          assert(uMedium >= uSmall)
+          assert(uLarge >= uMedium)
+          assert(uLarge >= uSmall)
+        }
       }
 
       'ops - {
-        import UNumeric.UDoubleIsFractional._ // <- Required for operations on UDouble
-        'add - {
+        '+ {
           val ud1 = 3.2 +- 0.1
           val ud2 = 6.8 +/- 0.4
           val result = ud1 + ud2
-          assert(result == UDouble(ud1.m + ud2.m, ud1.u + ud2.u))
+          val diff = result.m - (ud1.m + ud2.m)
+          assert(diff < EPSILON)
         }
-        'sub - {
+        '- {
           val ud1 = 3.2 +- 0.1
           val ud2 = 6.8 +/- 0.4
           val result = ud1 - ud2
-          assert(result == UDouble(ud1.m - ud2.m, ud1.u + ud2.u))
+          val diff = result.m - (ud1.m - ud2.m)
+          assert(diff < EPSILON)
         }
-        'mult - {
+        '* {
           val ud1 = 3.2 +- 0.1
           val ud2 = 6.8 +/- 0.4
           val result = ud1 * ud2
-          assert(result == UDouble(ud1.m * ud2.m, ud1.m * ud2.u + ud1.u * ud2.m))
+          val diff = result.m - (ud1.m * ud2.m)
+          assert(diff < EPSILON)
         }
-        'div - {
-          val ud1 = 6.8 +/- 0.4
-          val ud2 = 3.2 +- 0.1
+        '/ {
+          val ud1 = 3.2 +- 0.1
+          val ud2 = 6.8 +/- 0.4
           val result = ud1 / ud2
-          assert(result.m == ud1.m / ud2.m)
+          val diff = result.m - (ud1.m / ud2.m)
+          assert(diff < EPSILON)
         }
       }
 
       'conversions - {
-        import UNumeric.UDoubleIsFractional._
+        import UDouble.UDoubleIsFractional._
         'fromInt - {
-          val i = 9
-          assert(fromInt(i) == UDouble(i.toDouble, 0))
-        }
+          val i: Int = 9
+          assert(fromInt(i) === UDouble(9.0, 0.0))
+      }
         'toInt - {
           val ud = 3.2 +- 0.1
           val int: Int = 3
@@ -81,42 +117,99 @@ object Primitive_Tests extends TestSuite {
     }
 
     'UInt - {
+      import UInt.UIntIsIntegral._
+
       'create - {
         val ud = UInt(2155, 43)
       }
       'create_wImplicits - {
         val ui1 = 21 +- 1
         val ui2 = 21 +/- 1
-        assert(ui1 == ui2)
+        assert(ui1 === ui2)
+      }
+
+      'comparisons - {
+        '=== {
+          val ud0 = UDouble(21.2, 1.7)
+          val ud1 = 21.2 +- 1.7
+          val ud2 = 21.2 +/- 1.7
+
+          assert(ud0 === ud0)
+          assert(ud1 === ud1)
+          assert(ud2 === ud2)
+
+          assert(ud0 === ud1)
+          assert(ud1 === ud2)
+        }
+
+        val uSmall = 4.0 +- 1.0
+        val uMedium = 8.0 +- 1.0
+        val uLarge = 24.0 +- 1.0
+
+        '< {
+          assert(uSmall < uMedium)
+          assert(uMedium < uLarge)
+          assert(uSmall < uLarge)
+          assert(uSmall <= uMedium)
+          assert(uMedium <= uLarge)
+          assert(uSmall <= uLarge)
+        }
+
+        '> {
+          assert(uMedium > uSmall)
+          assert(uLarge > uMedium)
+          assert(uLarge > uSmall)
+          assert(uMedium >= uSmall)
+          assert(uLarge >= uMedium)
+          assert(uLarge >= uSmall)
+        }
+
+        val uA = 5.0 +- 2.5
+        val uB = 7.5 +- 2.5
+        val uC = 12.5 +- 2.5
+
+        '<= {
+          assert(uA <= uA)
+          assert(uB <= uB)
+          assert(uC <= uC)
+          assert(uA <= uB)
+          assert(uB <= uC)
+        }
+
+        '>= {
+          assert(uA >= uA)
+          assert(uB >= uB)
+          assert(uC >= uC)
+          assert(uA >= uB)
+          assert(uB >= uC)
+        }
       }
 
       'ops - {
-        import UNumeric.UIntIsIntegral._
-        'add - {
+        '+ {
           val ui1 = 3 +- 33
           val ui2 = 6 +/- 2
           val result = ui1 + ui2
-          assert(result == UInt(ui1.m + ui2.m, ui1.u + ui2.u))
+          assert(result === UInt(ui1.m + ui2.m, ui1.u + ui2.u))
         }
-        'sub - {
+        '- {
           val ui1 = 15 +- 2
           val ui2 = 22 +/- 5
           val result = ui1 - ui2
-          assert(result == UInt(ui1.m - ui2.m, ui1.u + ui2.u))
+          assert(result === UInt(ui1.m - ui2.m, ui1.u + ui2.u))
         }
-        'mult - {
+        '* {
           val ui1 = 16 +- 3
           val ui2 = 6 +/- 1
           val result = ui1 * ui2
-          assert(result == UInt(ui1.m * ui2.m, ui1.m * ui2.u + ui1.u * ui2.m))
+          assert(result === UInt(ui1.m * ui2.m, ui1.m * ui2.u + ui1.u * ui2.m))
         }
       }
 
       'conversions - {
-        import UNumeric.UIntIsIntegral._
         'fromInt - {
           val i = 9
-          assert(fromInt(i) == UInt(i, 0))
+          assert(fromInt(i) === UInt(i, 0))
         }
         'toInt - {
           val ui: UInt = 7 +- 1
@@ -141,15 +234,12 @@ object Primitive_Tests extends TestSuite {
       }
     }
 
-    /*'Mixing - {
-      'UInt_UDouble - { // TODO: Figure out why this fails
-        import UNumeric.UIntIsIntegral._
-        import UNumeric.UDoubleIsFractional._
-        import uncertainty._
-        val ui = 5 +- 2
-        val ud = 5.0 +- 2.0
-        //ui + ud
-        //ud + ui
+    /*'Mixing - { // TODO: Implement
+      'UInt_UDouble - {
+        val ui: UInt = 5 +- 2
+        val ud: UDouble = 5.0 +- 2.0
+        //println(s"ud + ui = (${ud + ui})")
+        assert(false)
       }
     }*/
 
